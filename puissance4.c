@@ -12,11 +12,39 @@ TODO : Vérification si gagnant (ligne, colonne et diagonale) *à discuter comme
 #define NBC 7
 
 bool player; // false = joueur 1, true = joueur 2
-bool isGameFinished = false; // Notre variable pour arrêter le jeu
+char *p1name;
+char p1color;
+char *p2name;
+char p2color;
+char pInfo[2][33]; // 32 caractères + '\0'
 
-char tokens[] = "ox"; // Tableau des jetons lié à player (changement automatique du jeton sans test)
+bool isGameFinished; // Notre variable pour arrêter le jeu
+
+char tokens[] = "ox"; // Tableau des jetons lié à player (changement automatique à chaque tour du jeton)
 char tab[NBL][NBC]; // Tableau pour le jeu
 int nextLine[NBC]; // Tableau des index pour déterminer où le jeton DOIT tomber
+
+void setColor(char color, char text[]){
+  switch (color)
+    {
+    case 'r':
+      printf("\033[0;31m");
+      break;
+    case 'y':
+      printf("\033[1;33m");
+      break;
+    case 'b':
+      printf("\033[0;34m");
+      break;
+    case 'g':
+      printf("\033[0;32m");
+      break;
+    default:
+      break;
+    }
+  printf("%s", &text);
+  printf("\033[0m");
+  }
 
 void initTab(void){
     for (int l=0; l<NBL; l++) {
@@ -53,17 +81,32 @@ void playerInput(int playerInput, int next){ // Insère le jeton du joueur
   nextLine[playerInput]++; // le prochain jeton sera au-dessus
 }
 
-bool initGame(){
+void initPlayersInfo(){
+  for (int i=0; i<2; i++){
+    printf("\nJoueur %d, entrez votre nom : ", i+1);
+    scanf("%s", &pInfo[i][0]);
+    printf("\nChoisissez une couleur (r=rouge, v=vert, b=bleu, j=jaune) : ");
+    scanf("%c", &pInfo[i][1]);
+  }
+}
+
+void initGame(){
+  player = false;
   initTab();
   printTab();
   initNextLine(NBC);
-  player = 0;
+  initPlayersInfo();
 }
 
 void changePlayer(void){// à améliorer (message et structure)
   player = !player; // ou player ^= 1;
-  if (player == false) printf("C'est au tour du joueur 1");
-  else printf("C'est au tour du joueur 2");
+  printf("C'est au tour de ");
+  if (!player){  
+    setColor(p1color, p1name);//Changer 'r' en couleur du joueur 
+  }
+  else{
+    setColor(p2color, p2name);
+  }
   printf("\n");
 }
     
