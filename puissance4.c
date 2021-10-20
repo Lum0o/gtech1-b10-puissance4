@@ -95,10 +95,10 @@ void initNextLine(int nbLine){
 void printTab(char playerColor){ /* à améliorer : - affichage trop étroit
 		                      - ajouter couleur pour jeton  */
   for (int l=0; l<NBL; l++){ // parcours les lignes
-        printf("\n---------------\n");
+        printf("\n -----------------------------\n");
 	
 	for(int c=0; c<NBC; c++) { // parcours les colonnes
-          printf("|");
+          printf(" | ");
 	  if(tab[l][c] == '.')
 	    setTokenColor('w', tab[l][c]);
 	  else if(tab[l][c] == tokens[0])
@@ -106,10 +106,10 @@ void printTab(char playerColor){ /* à améliorer : - affichage trop étroit
 	  else if(tab[l][c] == tokens[1])
 	    setTokenColor(p2color, tab[l][c]);
          }
-	 printf("|");
+	 printf(" |");
     }
-    printf("\n---------------\n");
-    printf(" 1 2 3 4 5 6 7\n");
+    printf("\n -----------------------------\n");
+    printf("   1   2   3   4   5   6   7  \n");
 }
 
 void playerInput(int playerInput, int next){ // Insère le jeton du joueur
