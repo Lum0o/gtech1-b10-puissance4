@@ -146,6 +146,12 @@ void initGame(){
   count = 0;
   maxCount = NBL*NBC;
   initTab();
+  printf("\n _____   _   _   _   _____   _____       ___   __   _   _____   _____        _   _ \n");
+  printf("|  _  | | | | | | | /  ___/ /  ___/     /   | |  | | | /  ___| | ____|      | | | |\n");
+  printf("| |_| | | | | | | | | |___  | |___     / /| | |   || | | |     | |__        | |_| |\n");
+  printf("|  ___/ | | | | | | |___  | |___  |   / / | | | ||   | | |     |  __|       |___  |\n");
+  printf("| |     | |_| | | |  ___| |  ___| |  / /  | | | | |  | | |___  | |___           | |\n");
+  printf("|_|     |_____/ |_| /_____/ /_____/ /_/   |_| |_|  |_| |_____| |_____|          |_|\n\n");
   printTab('w');
   initNextLine(NBC);
   initPlayersInfo();
@@ -176,6 +182,29 @@ int inputNbr(){
   return nb;
 }
 
+void printResult(){
+  if (count == maxCount){
+    printf("\n------------------------------------\n\n");
+    printf("Les deux joueurs ont fait égalité !");
+    printf("\n\n------------------------------------\n");
+  }
+  else {
+    if (player){
+      printf("\n------------------------------------\n\n");
+      setNameColor(p2color , p2name);
+      printf(" à gagné la partie !!");
+      printf("\n\n------------------------------------\n");
+    }
+    else {
+      printf("\n------------------------------------\n\n");
+      setNameColor(p1color , p1name);
+      printf(" à gagné la partie !!");
+      printf("\n\n------------------------------------\n");
+    }
+  }
+}
+
+
 void main(void){
   initGame();
   int nb;
@@ -187,7 +216,7 @@ void main(void){
   isGameFinished = TestVictory(LastMove,tab,NBL,NBC);
   
   } while(!isGameFinished && count != maxCount);
-  
-  
+  printTab(p1color);
+  printResult();
 }
 
