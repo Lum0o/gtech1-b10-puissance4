@@ -12,11 +12,11 @@ TODO : Vérification si gagnant (ligne, colonne et diagonale) *à discuter comme
 #define NBC 7
 
 bool player; // false = joueur 1, true = joueur 2
+
 char *p1name;
-char p1color;
+char p1color; // 32 caractères + '\0'
 char *p2name;
 char p2color;
-char pInfo[2][33]; // 32 caractères + '\0'
 
 bool isGameFinished; // Notre variable pour arrêter le jeu
 
@@ -24,19 +24,19 @@ char tokens[] = "ox"; // Tableau des jetons lié à player (changement automatiq
 char tab[NBL][NBC]; // Tableau pour le jeu
 int nextLine[NBC]; // Tableau des index pour déterminer où le jeton DOIT tomber
 
-void setColor(char color, char text[]){
+void setNameColor(char color, char text[]){
   switch (color)
     {
     case 'r':
       printf("\033[0;31m");
       break;
-    case 'y':
+    case 'j':
       printf("\033[1;33m");
       break;
     case 'b':
       printf("\033[0;34m");
       break;
-    case 'g':
+    case 'v':
       printf("\033[0;32m");
       break;
     default:
@@ -45,6 +45,31 @@ void setColor(char color, char text[]){
   printf("%s", &text);
   printf("\033[0m");
   }
+
+void setTokenColor(char color, char token){
+  switch (color)
+    {
+    case 'r':
+      printf("\033[0;31m");
+      break;
+    case 'j':
+      printf("\033[1;33m");
+      break;
+    case 'b':
+      printf("\033[0;34m");
+      break;
+    case 'v':
+      printf("\033[0;32m");
+      break;
+    case 'w':
+      printf("\033[1;37m");
+    default:
+      break;
+    }
+  printf("%c", token);
+  printf("\033[0m");
+  }
+
 
 void initTab(void){
     for (int l=0; l<NBL; l++) {
@@ -61,15 +86,24 @@ void initNextLine(int nbLine){
   printf("\n");
 }
 
-void printTab(void){ /* à améliorer : - affichage trop étroit
+void printTab(char playerColor){ /* à améliorer : - affichage trop étroit
 		                      - ajouter couleur pour jeton  */
   for (int l=0; l<NBL; l++){ // parcours les lignes
         printf("\n---------------\n");
 	
 	for(int c=0; c<NBC; c++) { // parcours les colonnes
-                printf("|%c", tab[l][c]);
-            }
-	    printf("|");
+          printf("|");
+	  /*printf("\033[0;33m");
+	  printf(".");
+	  printf("\033[0m");*/
+	  if(tab[l][c] == '.')
+	    setTokenColor('w', tab[l][c]);
+	  else if(tab[l][c] == tokens[0])
+	    setTokenColor(p1color, tab[l][c]);
+	  else if(tab[l][c] == tokens[1])
+	    setTokenColor(p2color, tab[l][c]);
+         }
+	 printf("|");
     }
     printf("\n---------------\n");
     printf(" 1 2 3 4 5 6 7\n");
@@ -82,18 +116,21 @@ void playerInput(int playerInput, int next){ // Insère le jeton du joueur
 }
 
 void initPlayersInfo(){
-  for (int i=0; i<2; i++){
-    printf("\nJoueur %d, entrez votre nom : ", i+1);
-    scanf("%s", &pInfo[i][0]);
+    printf("\nJoueur 1, entrez votre nom : ");
+    scanf("%s", &p1name);
     printf("\nChoisissez une couleur (r=rouge, v=vert, b=bleu, j=jaune) : ");
-    scanf("%c", &pInfo[i][1]);
-  }
+    scanf("%s", &p1color);
+    printf("\nJoueur 2, entrez votre nom : ");
+    scanf("%s", &p2name);
+    printf("\nChoisissez une couleur (r=rouge, v=vert, b=bleu, j=jaune) : ");
+    scanf("%s", &p2color);
+    printf("\n");
 }
 
 void initGame(){
-  player = false;
+  player = true;
   initTab();
-  printTab();
+  printTab('w');
   initNextLine(NBC);
   initPlayersInfo();
 }
@@ -101,11 +138,13 @@ void initGame(){
 void changePlayer(void){// à améliorer (message et structure)
   player = !player; // ou player ^= 1;
   printf("C'est au tour de ");
-  if (!player){  
-    setColor(p1color, p1name);//Changer 'r' en couleur du joueur 
+  if (!player){
+    setNameColor(p1color, p1name);//Changer 'r' en couleur du joueur
+    printTab(p1color);
   }
   else{
-    setColor(p2color, p2name);
+    setNameColor(p2color, p2name);
+    printTab(p2color);
   }
   printf("\n");
 }
@@ -113,14 +152,13 @@ void changePlayer(void){// à améliorer (message et structure)
 void main(void){
   initGame();
   int nb;
-
+  
   do { // dans TOUS les cas on démarre la partie
+  changePlayer();
   printf("Entre un nombre entre 1 et 7 : ");
   scanf("%d", &nb);
   playerInput(nb-1, nextLine[nb-1]); // n-1 (liste commence par 0)
-  printTab();
-  changePlayer();
-  
+
   } while(!isGameFinished);
 }
 
