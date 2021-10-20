@@ -124,10 +124,18 @@ void initPlayersInfo(){
     scanf("%s", &p1name);
     printf("\nChoisissez une couleur (r=rouge, v=vert, b=bleu, j=jaune) : ");
     scanf("%s", &p1color);
+    while ( p1color != 'r' && p1color != 'b' && p1color != 'j' && p1color != 'v' ) {
+      printf("vous avez rentré une couleur inexistante, veuillez réessayer");
+      scanf("%s", &p1color);
+      }
     printf("\nJoueur 2, entrez votre nom : ");
     scanf("%s", &p2name);
     printf("\nChoisissez une couleur (r=rouge, v=vert, b=bleu, j=jaune) : ");
     scanf("%s", &p2color);
+    while ( p2color != 'r' && p2color != 'b' && p2color != 'j' && p2color != 'v' ) {
+      printf("vous avez rentré une couleur inexistante, veuillez réessayer");
+      scanf("%s", &p2color);
+      }
     printf("\n");
 }
 
@@ -152,15 +160,25 @@ void changePlayer(void){// à améliorer (message et structure)
   }
   printf("\n");
 }
-    
+
+int inputNbr(){
+  int nb;
+  printf("Entre un nombre entre 1 et 7 : ");
+  scanf("%d", &nb);
+  while ( nb < 1 || nb > 7 ){
+    printf("Votre chiffre n'est pas compris entre 1 et 7 réesayez :");
+    scanf("%d", &nb);
+    }
+  return nb;
+}
+
 void main(void){
   initGame();
   int nb;
   
   do { // dans TOUS les cas on démarre la partie
   changePlayer();
-  printf("Entre un nombre entre 1 et 7 : ");
-  scanf("%d", &nb);
+  nb = inputNbr();
   playerInput(nb-1, nextLine[nb-1]); // n-1 (liste commence par 0)
   isGameFinished = TestVictory(LastMove,tab,NBL,NBC);
 
