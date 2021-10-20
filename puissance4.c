@@ -7,6 +7,7 @@ TODO : Vérification si gagnant (ligne, colonne et diagonale) *à discuter comme
 
 #include <stdio.h>
 #include <stdbool.h>
+#include "bonus.c"
 
 #define NBL 6
 #define NBC 7
@@ -23,6 +24,7 @@ bool isGameFinished; // Notre variable pour arrêter le jeu
 char tokens[] = "ox"; // Tableau des jetons lié à player (changement automatique à chaque tour du jeton)
 char tab[NBL][NBC]; // Tableau pour le jeu
 int nextLine[NBC]; // Tableau des index pour déterminer où le jeton DOIT tomber
+int LastMove[2]; // tableau contenant les coordonnées du dernier coup joué
 
 void setColor(char color, char text[]){
   switch (color)
@@ -78,6 +80,8 @@ void printTab(void){ /* à améliorer : - affichage trop étroit
 void playerInput(int playerInput, int next){ // Insère le jeton du joueur
   
   tab[5-next][playerInput] = tokens[player]; // le tableau se lit à l'envers donc 5-next pour inverser
+  LastMove[0] = 5-next;
+  LastMove[1] = playerInput; // attribution des coordonnées du dernier coup
   nextLine[playerInput]++; // le prochain jeton sera au-dessus
 }
 
@@ -120,7 +124,9 @@ void main(void){
   playerInput(nb-1, nextLine[nb-1]); // n-1 (liste commence par 0)
   printTab();
   changePlayer();
-  
+  isGameFinished = TestVictory(LastMove,tab,NBL,NBC);
+
   } while(!isGameFinished);
+  
 }
 
