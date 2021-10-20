@@ -13,6 +13,10 @@ TODO : Vérification si gagnant (ligne, colonne et diagonale) *à discuter comme
 #define NBC 7
 
 bool player; // false = joueur 1, true = joueur 2
+bool isGameNull;
+
+int count;
+int maxCount;
 
 char *p1name;
 char p1color; // 32 caractères + '\0'
@@ -95,9 +99,6 @@ void printTab(char playerColor){ /* à améliorer : - affichage trop étroit
 	
 	for(int c=0; c<NBC; c++) { // parcours les colonnes
           printf("|");
-	  /*printf("\033[0;33m");
-	  printf(".");
-	  printf("\033[0m");*/
 	  if(tab[l][c] == '.')
 	    setTokenColor('w', tab[l][c]);
 	  else if(tab[l][c] == tokens[0])
@@ -117,6 +118,7 @@ void playerInput(int playerInput, int next){ // Insère le jeton du joueur
   LastMove[0] = 5-next;
   LastMove[1] = playerInput; // attribution des coordonnées du dernier coup
   nextLine[playerInput]++; // le prochain jeton sera au-dessus
+  count++;
 }
 
 void initPlayersInfo(){
@@ -141,6 +143,8 @@ void initPlayersInfo(){
 
 void initGame(){
   player = true;
+  count = 0;
+  maxCount = NBL*NBC;
   initTab();
   printTab('w');
   initNextLine(NBC);
@@ -181,8 +185,9 @@ void main(void){
   nb = inputNbr();
   playerInput(nb-1, nextLine[nb-1]); // n-1 (liste commence par 0)
   isGameFinished = TestVictory(LastMove,tab,NBL,NBC);
-
-  } while(!isGameFinished);
+  
+  } while(!isGameFinished && count != maxCount);
+  
   
 }
 
