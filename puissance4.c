@@ -11,8 +11,16 @@ bool wantToRestart;
 
 int tokenCount;
 int maxTokens;
+int matchCount;
 
 //Info des joueurs
+typedef struct{
+  char *name;
+  char color;
+}playerInfo;
+
+playerInfo players[2];
+
 char *p1name;
 char p1color;
 char *p2name;
@@ -94,17 +102,19 @@ char checkColorInput(char input){ // Vérification si la couleur entrée existe
 }
 
 void initPlayersInfo(){
-    printf("\nJoueur 1, entrez votre nom : ");
-    scanf("%s", &p1name);
+
+  for (int i=0; i<2; i++){
+    char *name;
+    char color;
+    
+    printf("\nJoueur %d, entrez votre nom : ", i+1);
+    scanf("%s", &name);
+    players[i].name = name;
+    
     printf("Choisissez une couleur entre \033[0;31mr\033[0m, \033[0;32mv\033[0m, \033[0;34mb\033[0m, \033[1;33mj\033[0m) : ");
-    scanf("%s", &p1color);
-    p1color = checkColorInput(p1color);
-    printf("\nJoueur 2, entrez votre nom : ");
-    scanf("%s", &p2name);
-    printf("Choisissez une couleur entre \033[0;31mr\033[0m, \033[0;32mv\033[0m, \033[0;34mb\033[0m, \033[1;33mj\033[0m) : ");
-    scanf("%s", &p2color);
-    p2color = checkColorInput(p2color);
-    printf("\n");
+    scanf("%s", &color);
+    players[i].color = checkColorInput(color);
+  }
 }
 
 void printTab(){ // Affiche le tableau de jeu avec les couleurs des jetons 
@@ -116,9 +126,9 @@ void printTab(){ // Affiche le tableau de jeu avec les couleurs des jetons
 	  if(tab[l][c] == '.')
 	    printColoredChar('w', tab[l][c]);	  
 	  else if(tab[l][c] == tokens[0])
-	    printColoredChar(p1color, tab[l][c]);
-	  else if(tab[l][c] == tokens[1])
-	    printColoredChar(p2color, tab[l][c]);
+	    printColoredChar(players[0].color, tab[l][c]);
+	  else if(tab[l][c] == tokens[1]) 
+	    printColoredChar(players[1].color, tab[l][c]);
          }
 	 printf(" |");
     }
@@ -129,6 +139,7 @@ void printTab(){ // Affiche le tableau de jeu avec les couleurs des jetons
 void initGame(){
   player, wantToRestart = true;
   maxTokens = NBL*NBC;
+  matchCount = 1;
   initTab();
   printf("\n _____   _   _   _   _____   _____       ___   __   _   _____   _____        _   _ \n");
   printf("|  _  | | | | | | | /  ___/ /  ___/     /   | |  | | | /  ___| | ____|      | | | |\n");
@@ -139,6 +150,8 @@ void initGame(){
   printf("Pour gagner c'est simple, il vous faudra aligner 4 mêmes jetons à l'horizontale, à la verticale ou en diagonale !\n\n");
   printTab();
   initPlayersInfo();
+  printf("\n\n\nROUND %d", matchCount);
+  printf("\n--------");
 }
 
 void resetGame(){
@@ -159,12 +172,7 @@ void tokenInput(int playerInput, int next){ // Insère le jeton du joueur grâce
 void changePlayer(){
   player = !player; // ou player ^= 1;
   printf("C'est au tour de ");
-  if (!player){
-    printColoredText(p1color, p1name);
-  }
-  else{
-    printColoredText(p2color, p2name);
-  }
+  printColoredText(players[player].color, players[player].name);
   printf("\n");
 }
 
@@ -204,13 +212,13 @@ void printResult(){
   else {
     if (player){
       printf("\n------------------------------------\n\n");
-      printColoredText(p2color , p2name);
+      printColoredText(players[1].color, players[1].name);
       printf(" a gagné la partie !!");
       printf("\n\n------------------------------------\n");
     }
     else {
       printf("\n------------------------------------\n\n");
-      printColoredText(p1color , p1name);
+      printColoredText(players[0].color, players[0].name);
       printf(" a gagné la partie !!");
       printf("\n\n------------------------------------\n");
     }
@@ -239,7 +247,7 @@ void main(void){
       isThereAWinner = TestVictory(LastMove,tab,NBL,NBC);
   
     }while (!isThereAWinner && tokenCount != maxTokens); // Tant que pas de victoire/nulle
-    
+    matchCount++;
     printResult();
     wantToRestart = askRestart();
     
