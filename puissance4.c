@@ -17,14 +17,10 @@ int matchCount;
 typedef struct{
   char *name;
   char color;
+  int score;
 }playerInfo;
 
 playerInfo players[2];
-
-char *p1name;
-char p1color;
-char *p2name;
-char p2color;
 
 char tokens[] = "ox"; // Tableau des jetons lié à player (changement automatique à chaque tour du jeton)
 char tab[NBL][NBC]; // Tableau pour le jeu
@@ -150,14 +146,15 @@ void initGame(){
   printf("Pour gagner c'est simple, il vous faudra aligner 4 mêmes jetons à l'horizontale, à la verticale ou en diagonale !\n\n");
   printTab();
   initPlayersInfo();
-  printf("\n\n\nROUND %d", matchCount);
-  printf("\n--------");
 }
 
 void resetGame(){
   initTab();
   initNextLine(NBC);
+  player = !player;
   tokenCount = 0;
+  printf("\n\n\nROUND %d", matchCount);
+  printf("\n--------");
 }
 
 void tokenInput(int playerInput, int next){ // Insère le jeton du joueur grâce à l'index de nextLine
@@ -207,22 +204,21 @@ void printResult(){
   if (tokenCount == maxTokens && !isThereAWinner){
     printf("\n------------------------------------\n\n");
     printf("Vous êtes à égalité !");
-    printf("\n\n------------------------------------\n");
   }
   else {
-    if (player){
-      printf("\n------------------------------------\n\n");
-      printColoredText(players[1].color, players[1].name);
-      printf(" a gagné la partie !!");
-      printf("\n\n------------------------------------\n");
-    }
-    else {
-      printf("\n------------------------------------\n\n");
-      printColoredText(players[0].color, players[0].name);
-      printf(" a gagné la partie !!");
-      printf("\n\n------------------------------------\n");
-    }
+    players[player].score++;
+    printf("\n------------------------------------\n\n");
+    printColoredText(players[player].color, players[player].name);
+    printf(" a gagné la partie !!");
   }
+  printf("\n\nSCORE : \n");
+  printf("-> ");
+  printColoredText(players[0].color, players[0].name);
+  printf(" avec %d victoire.", players[0].score);
+  printf("\n-> ");
+  printColoredText(players[1].color, players[1].name);
+  printf(" avec %d victoire.", players[1].score);
+  printf("\n\n------------------------------------\n");
 }
 
 bool askRestart(){
@@ -252,5 +248,6 @@ void main(void){
     wantToRestart = askRestart();
     
   }while (wantToRestart); // Recommence la partie en gardant les noms et couleurs
+  printf("***FIN DU JEU***");
 }
 
