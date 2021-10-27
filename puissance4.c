@@ -173,28 +173,32 @@ void changePlayer(){
   printf("\n");
 }
 
+void flushstdin() {
+  int c;
+  while((c = getchar()) != '\n' && c != EOF){}
+}
+
 int inputNbr(){
   int nb;
   printf("Choisissez une colonne : ");
-  scanf("%d", &nb);
-  
-  //A TERMINER => voir intervenant
-  while(true){ //Tant que l'utilisateur ne rentre pas une bonne colonne
+  int success = scanf("%d", &nb);
+
+  while(true){
+    if (success > 0){
     
-    if (nb >= 1 && nb <= 7 && nextLine[nb-1] < 6) return nb;
-    else if (nextLine[nb-1] >= 6){
-      printf("La colonne est déjà pleine, choisissez-en une autre : ");
-      scanf("%d", &nb);
-    }
-    else if (nb < 1 || nb > 7 && !(((nb = getchar()) != '\n') && nb != EOF)){
-      printf("Vous avez choisi une colonne inexistante ! Réessayez : ");
-      scanf("%d", &nb);
+      if (nb >= 1 && nb <= NBC  && nextLine[nb-1] < 6) return nb;
+      else if (nextLine[nb-1] >= 6){
+        printf("La colonne est déjà pleine, choisissez-en une autre : ");
+      }
+      else if (nb < 1 || nb > NBC){
+        printf("Vous avez choisi une colonne inexistante ! Réessayez : ");
+      }
+      success = scanf("%d", &nb);
     }
     else{
       printf("Attention ! Vous avez entré une lettre ! Réessayez : ");
-      while((nb = getchar()) != '\n'){
-        scanf("%d", &nb);
-      }
+      flushstdin();
+      success = scanf("%d", &nb);
     }
   }
 }
@@ -224,8 +228,8 @@ void printResult(){
 bool askRestart(){
   char tmp;
   printf("Voulez-vous rejouer ?\nTapez 'Y' pour OUI ou une autre touche pour fermer le jeu : ");
-  scanf("%s", &tmp);
-  if (tmp == 'y') return true;
+  int success = scanf("%s", &tmp);
+  if (success > 0 && tmp == 'y') return true;
   else return false;
 }
 
@@ -248,6 +252,6 @@ void main(void){
     wantToRestart = askRestart();
     
   }while (wantToRestart); // Recommence la partie en gardant les noms et couleurs
-  printf("***FIN DU JEU***");
+  printf("\n***FIN DU JEU***\n\n");
 }
 
