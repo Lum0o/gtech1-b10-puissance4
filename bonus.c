@@ -1,15 +1,16 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+extern char** tab;
 
-bool TestVictory(int LastMove[2],char Tab[6][7], char NBL, char NBC){
+bool TestVictory(int LastMove[2], char NBL, char NBC){
   int victory = 1;
-  char token = Tab[LastMove[0]][LastMove[1]];
+  char token = tab[LastMove[0]][LastMove[1]];
 
 // Vérification de sortie de tableau -> Vérification des jetons en haut à gauche
   for ( int i = 1; i<4 ; i++ ) {
     if ( LastMove[0] > (i-1) && LastMove[1] > (i-1) ){
-      if ( Tab[LastMove[0]-i][LastMove[1]-i] == token ){
+      if ( tab[LastMove[0]-i][LastMove[1]-i] == token ){
         victory = victory + 1;
       }
       else {
@@ -26,7 +27,7 @@ bool TestVictory(int LastMove[2],char Tab[6][7], char NBL, char NBC){
 
   for ( int i = 1; i<4 ; i++ ) {
     if ( LastMove[0] < (NBL-i) && LastMove[1] < (NBC-i) ){
-      if ( Tab[LastMove[0]+i][LastMove[1]+i] == token ){
+      if ( tab[LastMove[0]+i][LastMove[1]+i] == token ){
         victory = victory + 1;
       }
       else {
@@ -41,7 +42,7 @@ bool TestVictory(int LastMove[2],char Tab[6][7], char NBL, char NBC){
 
   for ( int i = 1;  i<4 ; i++ ) {
     if ( LastMove[0] < (NBL-i) && LastMove[1] > (i-1) ){
-      if ( Tab[LastMove[0]+i][LastMove[1]-i] == token ){
+      if ( tab[LastMove[0]+i][LastMove[1]-i] == token ){
         victory = victory + 1;
       }
       else {
@@ -54,7 +55,7 @@ bool TestVictory(int LastMove[2],char Tab[6][7], char NBL, char NBC){
 
   for ( int i = 1; i<4 ; i++) {
     if ( LastMove[0] > (i-1) && LastMove[1] < (NBC-i) ){
-      if ( Tab[LastMove[0]-i][LastMove[1]+i] == token ){
+      if ( tab[LastMove[0]-i][LastMove[1]+i] == token ){
         victory = victory + 1;
       }
       else {
@@ -69,7 +70,7 @@ bool TestVictory(int LastMove[2],char Tab[6][7], char NBL, char NBC){
 
   for ( int i = 1; i<4 ; i++ ) {
     if ( LastMove[1] > (i-1) ) {
-      if ( Tab[LastMove[0]][LastMove[1]-i] == token ){
+      if ( tab[LastMove[0]][LastMove[1]-i] == token ){
         victory = victory + 1;
       }
       else {
@@ -82,7 +83,7 @@ bool TestVictory(int LastMove[2],char Tab[6][7], char NBL, char NBC){
 
   for ( int i = 1; i<4 ; i++ ) {
     if ( LastMove[1] < (NBC-i) ){
-      if ( Tab[LastMove[0]][LastMove[1]+i] == token ){
+      if ( tab[LastMove[0]][LastMove[1]+i] == token ){
         victory = victory + 1;
       }
       else {
@@ -98,7 +99,7 @@ bool TestVictory(int LastMove[2],char Tab[6][7], char NBL, char NBC){
 
   for ( int i= 1; i<4 ; i++ ) {
     if ( LastMove[0] < (NBL-i) ){
-      if ( Tab[LastMove[0]+i][LastMove[1]] == token ){
+      if ( tab[LastMove[0]+i][LastMove[1]] == token ){
         victory = victory + 1;
       }
       else {

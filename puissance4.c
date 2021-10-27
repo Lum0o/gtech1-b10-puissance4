@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "bonus.c"
+#include <stdlib.h>
+#include "bonus.h"
 
-#define NBL 6
-#define NBC 7
+#define NBL_DEFAULT 6
+#define NBC_DEFAULT 7
+
+int NBL = NBL_DEFAULT;
+int NBC = NBC_DEFAULT;
 
 bool player; // false = joueur 1, true = joueur 2
 bool isThereAWinner; // Notre variable pour arrêter le jeu en cas de victoire
@@ -23,9 +27,23 @@ typedef struct{
 playerInfo players[2];
 
 char tokens[] = "ox"; // Tableau des jetons lié à player (changement automatique à chaque tour du jeton)
-char tab[NBL][NBC]; // Tableau pour le jeu
-int nextLine[NBC]; // Tableau des index pour déterminer où le jeton DOIT tomber
+char **tab = NULL ;
+int *nextLine = NULL ; // Tableau des index pour déterminer où le jeton DOIT tomber
 int LastMove[2]; // Tableau contenant les coordonnées du dernier coup joué
+
+char **tab_malloc() {
+  char **tab_ = (char**)malloc(NBL * sizeof(char*)); // "Les lignes"
+  for(int l=0; l<NBL; l++) // Pour chaque "ligne"
+    tab_[l] = (char*)malloc(NBC * sizeof(char)); // Les colonnes sont "attachées" à =tab[l]=
+  return tab_;
+}
+
+int *nextLine_malloc() {
+  int *nextLine_ = (int*)malloc( NBC * sizeof(int));
+  return nextLine_;
+}
+
+
 
 void printColoredText(char color, char text[]){
   switch (color)
@@ -75,6 +93,7 @@ void printColoredChar(char color, char token){
 
 
 void initTab(){
+  tab = tab_malloc();
     for (int l=0; l<NBL; l++) {
         for (int c=0; c<NBC; c++) {
 	  tab[l][c] = '.'; 
@@ -115,8 +134,11 @@ void initPlayersInfo(){
 
 void printTab(){ // Affiche le tableau de jeu avec les couleurs des jetons 
   for (int l=0; l<NBL; l++){
-        printf("\n -----------------------------\n");
-	
+        printf("\n ");
+        for(int l = 0; l<NBC; l++)
+          printf("----");
+	printf("-\n");
+
 	for(int c=0; c<NBC; c++) {
           printf(" | ");
 	  if(tab[l][c] == '.')
@@ -128,13 +150,20 @@ void printTab(){ // Affiche le tableau de jeu avec les couleurs des jetons
          }
 	 printf(" |");
     }
-    printf("\n -----------------------------\n");
-    printf("   1   2   3   4   5   6   7  \n\n");
+    printf("\n ");
+    for(int l = 0; l<NBC; l++)
+      printf("----");
+    printf("-\n  ");
+
+    for(int l = 0; l<NBC; l++)
+      printf(" %d  ",( l+1 ));
+    printf("\n\n");
 }
 
 void initGame(){
   player, wantToRestart = true;
   maxTokens = NBL*NBC;
+  nextLine = nextLine_malloc() ; 
   matchCount = 1;
   initTab();
   printf("\n _____   _   _   _   _____   _____       ___   __   _   _____   _____        _   _ \n");
@@ -233,9 +262,13 @@ bool askRestart(){
   else return false;
 }
 
-void main(void){
+void main(int argc, char* argv[]){
+  if (argc > 2){
+    NBL = atoi(argv[1]);
+    NBC = atoi(argv[2]);
+    printf("%d , %d", NBL, NBC);
+  }
   initGame();
-  
   do{
     resetGame();
     int nb;
@@ -244,7 +277,7 @@ void main(void){
       changePlayer();
       nb = inputNbr();
       tokenInput(nb-1, nextLine[nb-1]); // n-1 (liste commence par 0)
-      isThereAWinner = TestVictory(LastMove,tab,NBL,NBC);
+      isThereAWinner = TestVictory(LastMove,NBL,NBC);
   
     }while (!isThereAWinner && tokenCount != maxTokens); // Tant que pas de victoire/nulle
     matchCount++;
@@ -254,4 +287,5 @@ void main(void){
   }while (wantToRestart); // Recommence la partie en gardant les noms et couleurs
   printf("\n***FIN DU JEU***\n\n");
 }
+
 
